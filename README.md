@@ -58,7 +58,17 @@
       https://api.github.com/graphql
     ```
 
-2. Save the `actions-nsg-deployment.bicep` file — copy the Bicep content from the config doc and save it locally in the directory you will run the commands from
+2. The `actions-nsg-deployment.bicep` file is included in this repo — it contains the minimum NSG rules from the [GitHub docs](https://docs.github.com/en/enterprise-cloud@latest/admin/configuring-settings/configuring-private-networking-for-hosted-compute-products/configuring-private-networking-for-github-hosted-runners-in-your-enterprise). Clone or download this repo so the file is in the directory you will run the commands from. You may need to add additional rules for your specific use case.
+
+    **NSG rules included:**
+    | Rule | Priority | Direction | Purpose |
+    |---|---|---|---|
+    | AllowVnetOutBoundOverwrite | 200 | Outbound | TCP 443 to VirtualNetwork |
+    | AllowOutBoundActions | 210 | Outbound | 443 to GitHub Actions service IPs |
+    | AllowOutBoundGitHub | 220 | Outbound | 443 to GitHub.com IP ranges |
+    | AllowStorageOutbound | 230 | Outbound | 443 to Azure Storage service tag |
+
+    > If using **GHE.com** (data residency), you must also add the [GHE.com ingress IP ranges](https://docs.github.com/en/enterprise-cloud@latest/admin/data-residency/network-details-for-ghecom#ranges-for-ingress-traffic) to the `AllowOutBoundGitHub` rule.
 
 3. Note the `databaseId` value — used as `DATABASE_ID` in the commands below
 
